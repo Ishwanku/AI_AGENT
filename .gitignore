@@ -2,6 +2,7 @@
 pycache/ *.pyc *.pyo *.pyd .Python env/ venv/ .env *.env
 #Node
 node_modules/ dist/ build/
+**/node_modules/
 #VSCode
 .vscode/
 #Misc

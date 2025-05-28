@@ -1,6 +1,9 @@
 # Import the uuid module to generate unique session IDs
 import uuid
 
+# Import the httpx library for making HTTP requests (not used directly here but likely used later for API calls)
+import httpx
+
 # Import the configuration class (not used directly here but likely used later for API keys, etc.)
 from ..config import Config
 
@@ -18,13 +21,18 @@ class AIService:
         Returns:
         - A tuple containing the AI-generated reply and the session ID.
         """
-        
+
         # If no session_id was provided, generate a new unique one using UUID
         if not session_id:
             session_id = str(uuid.uuid4())
-
-        # Create a reply message (this is a mock/placeholder; real logic would call an AI API)
-        reply = f"Echo: {message}"
-
-        # Return the reply and the session ID
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.x.ai/v1/chat",  # Replace with actual endpoint
+                headers={"Authorization": f"Bearer {Config.AI_API_KEY}"},
+                json={"message": message, "session_id": session_id},
+            )
+            response.raise_for_status()
+            # Retrieve the AI's reply from the response JSON
+            reply = response.json().get("reply", "No response")
         return reply, session_id
+    
